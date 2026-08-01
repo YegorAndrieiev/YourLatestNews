@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  frontend:
+    build: ./client
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+    env_file:
+      - ./client/.env
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - API_URL=http://backend:5000
+  backend:
+    build: ./server
+    ports:
+      - '5001:5000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+  postgres:
+    image: postgres:16
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d yourlatestnews']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - ./server/.env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: yourlatestnews
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+volumes:
+  pgdata:
