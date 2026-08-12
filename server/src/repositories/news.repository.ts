@@ -19,7 +19,7 @@ export const getNewsRepo = async (
       orderBy: { savedAt: 'desc' },
       include: { news: true },
     });
-    return savedRecords.map((record) => ({
+    return savedRecords.map((record: { news: News }) => ({
       ...record.news,
       saved: true,
     }));

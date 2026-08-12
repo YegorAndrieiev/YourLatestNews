@@ -74,7 +74,9 @@ export const runNewsSync = async () => {
       where: { createdAt: { gte: yesterday } },
       select: { title: true, url: true },
     });
-    const existingUrlsSet = new Set(recentNewsDb.map((n) => n.url));
+    const existingUrlsSet = new Set(
+      recentNewsDb.map((n: { title: string; url: string }) => n.url)
+    );
     let addedCount = 0;
     for (const article of rawNewsList) {
       if (existingUrlsSet.has(article.url)) {
