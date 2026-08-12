@@ -30,32 +30,37 @@ export function NewsFeed({ initialNews, selectedCategories }: NewsFeedProps) {
   const [news, setNews] = useState<News[]>(initialNews);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialNews.length >= PAGE_LIMIT);
-  const [isLoading, setIsLoading] = useState(() => selectedCategories.includes('SAVED') && Boolean(user));
+  const [isLoading, setIsLoading] = useState(
+    () => selectedCategories.includes('SAVED') && Boolean(user),
+  );
   const [isError, setIsError] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [prevInitialNews, setPrevInitialNews] = useState(initialNews);
   const [prevCategories, setPrevCategories] = useState(selectedCategories);
   const [prevUser, setPrevUser] = useState(user);
-  if (prevInitialNews !== initialNews || prevCategories !== selectedCategories || prevUser !== user) 
-    {
-      setPrevInitialNews(initialNews);
-      setPrevCategories(selectedCategories);
-      setPrevUser(user);
-      setPage(1);
-      setIsError(false);
-      if (selectedCategories.includes('SAVED')) {
-        if (!user) {
-          setNews([]);
-          setHasMore(false);
-          setIsLoading(false);
-        } else {
-          setIsLoading(true);
-        }
-      } else {
-        setNews(initialNews);
-        setHasMore(initialNews.length >= PAGE_LIMIT);
+  if (
+    prevInitialNews !== initialNews ||
+    prevCategories !== selectedCategories ||
+    prevUser !== user
+  ) {
+    setPrevInitialNews(initialNews);
+    setPrevCategories(selectedCategories);
+    setPrevUser(user);
+    setPage(1);
+    setIsError(false);
+    if (selectedCategories.includes('SAVED')) {
+      if (!user) {
+        setNews([]);
+        setHasMore(false);
         setIsLoading(false);
+      } else {
+        setIsLoading(true);
       }
+    } else {
+      setNews(initialNews);
+      setHasMore(initialNews.length >= PAGE_LIMIT);
+      setIsLoading(false);
+    }
   }
   useEffect(() => {
     if (!selectedCategories.includes('SAVED') || !user) return;

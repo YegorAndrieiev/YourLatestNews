@@ -15,4 +15,5 @@ export const env = {
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
   NEWSDATA_API_KEY: process.env.NEWSDATA_API_KEY || '',
   CLIENT_URL: process.env.CLIENT_URL || '',
+  CRON_SECRET: process.env.CRON_SECRET || '',
 };

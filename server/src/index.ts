@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import { env } from './config/env';
-import { initNewsFetcherCron } from './cron/newsUpdate';
 import passport from './config/passport';
 import authRoutes from './routes/auth.routes';
 import newsRoutes from './routes/news.routes';
+import cronRoutes from './routes/cron.routes';
 import cookieParser from 'cookie-parser';
 const app = express();
 app.use(
@@ -18,10 +18,10 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use('/auth', authRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/cron', cronRoutes);
 app.get('/', (req, res) => {
   res.send('Serenity API is running');
 });
-initNewsFetcherCron();
 app.listen(env.PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${env.PORT}`);
 });

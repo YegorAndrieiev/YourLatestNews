@@ -1,5 +1,5 @@
 import { prisma } from '../config/prisma.js';
-import { News} from '../generated/prisma/client.js';
+import { News } from '../generated/prisma/client.js';
 type NewsWithOptionalSavedBy = News & {
   savedBy?: { userId: string }[];
 };
