@@ -6,10 +6,6 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "prettier": "^3.8.3",
-    "prisma": "^7.9.1"
-  },
-  "dependencies": {
-    "@prisma/client": "^7.9.1"
+    "prettier": "^3.8.3"
   }
 }

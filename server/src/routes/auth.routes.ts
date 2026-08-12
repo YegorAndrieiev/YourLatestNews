@@ -1,27 +1,15 @@
 import { Router } from 'express';
 import {
-  registerUser,
-  loginUser,
-  sendVerificationCode,
-  resetPassword,
   getMeRequest,
   refreshTokenController,
   logout,
 } from '../controllers/auth.controller.js';
-import {
-  min15Limiter,
-  codeLimiter,
-} from '../middleware/rateLimit.middleware.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import redisClient from '../config/redisClient.js';
 const router = Router();
-router.post('/send-code', codeLimiter, sendVerificationCode);
-router.post('/register', min15Limiter, registerUser);
-router.post('/login', min15Limiter, loginUser);
-router.post('/reset-password', min15Limiter, resetPassword);
 router.get('/me', authMiddleware, getMeRequest);
 router.post('/refresh', refreshTokenController);
 router.post('/logout', logout);
@@ -33,7 +21,7 @@ router.get(
   '/google/callback',
   passport.authenticate('google', {
     session: false,
-    failureRedirect: 'http://localhost:5173/login',
+    failureRedirect: 'http://localhost:5173/',
   }),
   async (req, res) => {
     try {
@@ -71,9 +59,9 @@ router.get(
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-      return res.redirect('http://localhost:5173/tasks');
+      return res.redirect('http://localhost:5173/');
     } catch {
-      return res.redirect('http://localhost:5173/login');
+      return res.redirect('http://localhost:5173/');
     }
   },
 );

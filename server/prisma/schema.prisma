@@ -17,28 +17,22 @@ model User {
   username String
   createdAt DateTime @default(now())
   savedNews SavedNews[]
-  sessions Session[] 
-}
-model Session {
-  id           String   @id @default(uuid())
-  userId       String
-  refreshToken String
-  user         User     @relation(fields: [userId], references: [id])
-  createdAt    DateTime @default(now())
-  expiresAt    DateTime
 }
 model News {
   id          String   @id @default(uuid())
   title       String
+  url         String @unique
   summary     String   @db.Text
   category    String
   sourceName  String
-  imageUrl    String
+  imageUrl    String?
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
   savedBy     SavedNews[]
   @@index([category])
   @@index([publishedAt])
+  @@index([title])
+  @@index([url])
 }
 model SavedNews {
   userId  String

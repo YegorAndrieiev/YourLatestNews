@@ -1,8 +1,14 @@
 'use client';
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { getMeRequest } from '@/api/client';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 export interface User {
   id: string;
-  email: string;
   username: string;
 }
 
@@ -13,11 +19,6 @@ interface AuthContextType {
   refetchUser: () => Promise<void>;
   logout: () => void;
 }
-const getMeRequest = async (): Promise<User> => {
-  const res = await fetch('/auth/me');
-  if (!res.ok) throw new Error('Unauthorized');
-  return res.json();
-};
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -34,8 +35,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    let isMounted = true;
+    getMeRequest()
+      .then((userData) => {
+        if (isMounted) setUser(userData);
+      })
+      .catch(() => {
+        if (isMounted) setUser(null);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   const logout = async () => {
     try {
       await fetch('/auth/logout', { method: 'POST' });

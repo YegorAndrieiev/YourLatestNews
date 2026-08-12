@@ -20,9 +20,9 @@ passport.use(
         }
         let user = await findUserByEmail(email);
         if (!user) {
-          const randomSuffix = Math.floor(100 + Math.random() * 900);
-          const username = `user_${Date.now()}${randomSuffix}`;
-          user = await createUser({ username, email, password: null });
+          const username =
+            profile.displayName || email?.split('@')[0] || 'User';
+          user = await createUser({ username, email });
         }
         return done(null, user);
       } catch (error) {

@@ -1,12 +1,12 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button'; 
+import { Button } from '@/components/ui/button';
 
 const categories = [
   { id: 'ALL', label: 'Всі новини' },
   { id: 'POLITICS', label: 'Політика' },
-  { id: 'SPORT', label: 'Спорт' },
+  { id: 'SPORTS', label: 'Спорт' },
   { id: 'SCIENCE', label: 'Наука' },
   { id: 'SAVED', label: 'Збережені' },
 ];
@@ -38,9 +38,12 @@ export function CategoryFilter() {
         updated = [...selectedCategories, id];
       }
       const regularCategoryIds = categories
-      .filter((c) => c.id !== 'ALL' && c.id !== 'SAVED')
-      .map((c) => c.id);
-      if (updated.length === 0 || updated.length === regularCategoryIds.length) {
+        .filter((c) => c.id !== 'ALL' && c.id !== 'SAVED')
+        .map((c) => c.id);
+      if (
+        updated.length === 0 ||
+        updated.length === regularCategoryIds.length
+      ) {
         params.delete('category');
       } else {
         params.set('category', updated.join(','));
@@ -64,12 +67,12 @@ export function CategoryFilter() {
           <Button
             key={cat.id}
             onClick={() => handleSelect(cat.id)}
-            variant={isActive ? "default" : "outline"}
+            variant={isActive ? 'default' : 'outline'}
             size="sm"
             className={
               isActive
-                ? "bg-emerald-600 hover:bg-emerald-600 text-white border-transparent"
-                : "text-zinc-600 dark:text-zinc-400"
+                ? 'bg-emerald-600 hover:bg-emerald-600 text-white border-transparent'
+                : 'text-zinc-600 dark:text-zinc-400'
             }
           >
             {cat.label}
