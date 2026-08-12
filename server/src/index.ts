@@ -5,7 +5,6 @@ import { initNewsFetcherCron } from './cron/newsUpdate';
 import passport from './config/passport';
 import authRoutes from './routes/auth.routes';
 import newsRoutes from './routes/news.routes';
-import aiRoutes from './routes/ai.routes';
 import cookieParser from 'cookie-parser';
 const app = express();
 app.use(
