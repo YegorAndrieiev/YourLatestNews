@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { env } from '../config/env';
+import { env } from '../config/env.js';
 import redisClient from '../config/redisClient.js';
 export const refreshToken = async (token: string) => {
   let decoded: any;

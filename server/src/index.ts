@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { env } from './config/env';
-import passport from './config/passport';
-import authRoutes from './routes/auth.routes';
-import newsRoutes from './routes/news.routes';
-import cronRoutes from './routes/cron.routes';
+import { env } from './config/env.js';
+import passport from './config/passport.js';
+import authRoutes from './routes/auth.routes.js';
+import newsRoutes from './routes/news.routes.js';
+import cronRoutes from './routes/cron.routes.js';
 import cookieParser from 'cookie-parser';
 const app = express();
 app.use(
