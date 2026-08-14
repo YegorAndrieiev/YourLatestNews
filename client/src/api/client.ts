@@ -15,7 +15,7 @@ export const request = async (
 ): Promise<any> => {
   const baseUrl =
     typeof window === 'undefined'
-      ? process.env.API_URL || 'http://localhost:5000'
+      ? process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
       : '';
   const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
   const res = await fetch(`${fullUrl}`, {
