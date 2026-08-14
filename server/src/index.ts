@@ -22,6 +22,9 @@ app.use('/api/cron', cronRoutes);
 app.get('/', (req, res) => {
   res.send('Serenity API is running');
 });
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+});
 app.listen(env.PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${env.PORT}`);
 });
