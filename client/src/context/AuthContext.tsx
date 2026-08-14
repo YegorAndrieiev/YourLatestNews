@@ -52,11 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const logout = async () => {
     try {
+      setIsLoading(true);
       await fetch('/auth/logout', { method: 'POST' });
     } catch (e) {
       console.error('Logout error:', e);
     } finally {
-      setUser(null);
       window.location.href = '/';
     }
   };
