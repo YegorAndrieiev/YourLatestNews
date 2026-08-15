@@ -14,7 +14,7 @@
 
 > **How it works:** A brief video overview of the interface.
 
-https://github.com/user-attachments/assets/f9bdb9b2-2d78-4d67-87f9-09ac6ff5edbf
+https://github.com/user-attachments/assets/2eb9c53b-7302-4f06-91d6-b0818c0a855a
 
 ---
 
@@ -23,7 +23,7 @@ https://github.com/user-attachments/assets/f9bdb9b2-2d78-4d67-87f9-09ac6ff5edbf
 - **Automated News Collection (Cron Jobs):** A configured task scheduler regularly polls news sources, checks for duplicates, and updates the database.
 - **AI Generation (Gemini AI):** Each news article is analyzed by artificial intelligence to create a concise 2-4 sentence summary in Ukrainian.
 - **Secure Authentication:** Integration with Google OAuth 2.0 (Passport.js). Sessions are securely stored in Redis, and JWT tokens are used for access.
-- **Modern UI/UX:** Responsive Next.js design with light/dark theme support and instant loading.
+- **Modern UI/UX:** Responsive Next.js design with instant loading.
 
 ---
 
@@ -55,17 +55,69 @@ This project is fully containerized using Docker. You can deploy it locally with
 - Accounts created and API keys obtained for the following services:
   - **Google Cloud Console:** for `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
   - **Google AI Studio:** for `GEMINI_API_KEY`.
-  - **NewsData.io:** for a free `NEWSDATA_API_KEY`.
+  - **NewsData.io:** for `NEWSDATA_API_KEY`.
 
 ### 2. Code Changes for Local Development
 
 Before running locally, you need to lift the strict security restrictions used in production:
 
-1. **CORS:** In your main server entry file (usually `src/index.ts` or `app.ts`), change the `origin` to your local client:
+1. **Cookies:** In the `server/src/routes/auth.routes.ts` file, disable the `secure` flag for local HTTP development:
    ```typescript
-   app.use(
-     cors({
-       origin: 'http://localhost:3000', // Use for local development
-       credentials: true,
-     }),
-   );
+   res.cookie('accessToken', accessToken, {
+     httpOnly: true,
+     secure: false, // CHANGED: false for local development, true for production
+     sameSite: 'lax', // CHANGED: 'lax' for local development, 'none' for production
+     maxAge: 15 * 60 * 1000,
+   });
+
+   res.cookie('refreshToken', refreshToken, {
+     httpOnly: true,
+     secure: false, // CHANGED: false for local development
+     sameSite: 'lax', // CHANGED: 'lax' for local development, 'none' for production
+     maxAge: 7 * 24 * 60 * 60 * 1000,
+   });
+   ```
+
+### 3. Environment Setup (.env)
+
+Create a `.env` file in the root of the `/server` folder and fill it in. **Note the `DATABASE_URL` — the local path is used for Docker.**
+
+```env
+# Server Configuration
+PORT=5000
+# Frontend URL (for CORS)
+CLIENT_URL="http://localhost:5173"
+# Database Configuration (PostgreSQL / Prisma)
+# Note for local dev: 'password' must match POSTGRES_PASSWORD in the root .env (YourLatestNews/.env)
+DATABASE_URL="postgresql://postgres:password@postgres:5432/yourlatestnews?schema=public"
+# Redis Configuration
+REDIS_URL=redis://redis:6379
+REDIS_HOST=redis
+REDIS_PORT=6379
+# JWT Configuration
+JWT_SECRET="your_jwt_access_token_secret_key_change_in_production"
+JWT_REFRESH_SECRET="your_jwt_refresh_token_secret_key_change_in_production"
+# Session Configuration
+SESSION_SECRET="your_express_session_secret_key_change_in_production"
+# Google OAuth 2.0 Credentials
+GOOGLE_CLIENT_ID="your_google_client_id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
+GOOGLE_CALLBACK_URL="http://localhost:5001/auth/google/callback"
+# External APIs
+GEMINI_API_KEY="your_gemini_api_key_here"
+NEWSDATA_API_KEY="your_newsdata_api_key_here"
+# Cron Security
+CRON_SECRET="your_super_secret_cron_token_change_in_production"
+```
+For the client folder (`/client/.env`):
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5001
+```
+
+### 4. Running the Project
+
+After setting up the environment variables and adjusting the code, run the project with the following command:
+
+```bash
+docker compose up --build
+```
