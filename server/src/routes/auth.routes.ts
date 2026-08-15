@@ -50,14 +50,14 @@ router.get(
       await redisClient.setEx(redisKey, 604800, JSON.stringify(sessionData));
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: true, // use for local development: false
-        sameSite: 'none',
+        secure: true, // CHANGED: false for local development
+        sameSite: 'none', // CHANGED: 'lax' for local development, 'none' for production
         maxAge: 15 * 60 * 1000,
       });
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: true, // use for local development: false
-        sameSite: 'none',
+        secure: true, // CHANGED: false for local development
+        sameSite: 'none', // CHANGED: 'lax' for local development, 'none' for production
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.redirect(url);
