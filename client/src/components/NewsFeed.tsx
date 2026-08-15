@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
 import { BookmarkButton } from './BookmarkButton';
 import { request } from '@/api/client';
 import { useAuth } from '@/context/AuthContext';
 import { formatNewsDate } from '@/lib/utils';
-
+import { SafeImage } from './SafeImage';
 type News = {
   id: string;
   title: string;
@@ -30,37 +29,32 @@ export function NewsFeed({ initialNews, selectedCategories }: NewsFeedProps) {
   const [news, setNews] = useState<News[]>(initialNews);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialNews.length >= PAGE_LIMIT);
-  const [isLoading, setIsLoading] = useState(
-    () => selectedCategories.includes('SAVED') && Boolean(user),
-  );
+  const [isLoading, setIsLoading] = useState(() => selectedCategories.includes('SAVED') && Boolean(user));
   const [isError, setIsError] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [prevInitialNews, setPrevInitialNews] = useState(initialNews);
   const [prevCategories, setPrevCategories] = useState(selectedCategories);
   const [prevUser, setPrevUser] = useState(user);
-  if (
-    prevInitialNews !== initialNews ||
-    prevCategories !== selectedCategories ||
-    prevUser !== user
-  ) {
-    setPrevInitialNews(initialNews);
-    setPrevCategories(selectedCategories);
-    setPrevUser(user);
-    setPage(1);
-    setIsError(false);
-    if (selectedCategories.includes('SAVED')) {
-      if (!user) {
-        setNews([]);
-        setHasMore(false);
-        setIsLoading(false);
+  if (prevInitialNews !== initialNews || prevCategories !== selectedCategories || prevUser !== user) 
+    {
+      setPrevInitialNews(initialNews);
+      setPrevCategories(selectedCategories);
+      setPrevUser(user);
+      setPage(1);
+      setIsError(false);
+      if (selectedCategories.includes('SAVED')) {
+        if (!user) {
+          setNews([]);
+          setHasMore(false);
+          setIsLoading(false);
+        } else {
+          setIsLoading(true);
+        }
       } else {
-        setIsLoading(true);
+        setNews(initialNews);
+        setHasMore(initialNews.length >= PAGE_LIMIT);
+        setIsLoading(false);
       }
-    } else {
-      setNews(initialNews);
-      setHasMore(initialNews.length >= PAGE_LIMIT);
-      setIsLoading(false);
-    }
   }
   useEffect(() => {
     if (!selectedCategories.includes('SAVED') || !user) return;
@@ -144,15 +138,7 @@ export function NewsFeed({ initialNews, selectedCategories }: NewsFeedProps) {
             className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm flex flex-col h-full hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
           >
             <div className="relative h-48 w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
-              {item.imageUrl && (
-                <Image
-                  src={item.imageUrl}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              )}
+              <SafeImage src={item.imageUrl} category={item.category}/>
               <span className="absolute top-3 left-3 bg-zinc-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
                 {item.category === 'POLITICS'
                   ? 'ПОЛІТИКА'
