@@ -1,4 +1,4 @@
-# YourLatestNews 📰 🚀
+# YourLatestNews 📰🌐
 
 [![Live Demo](https://img.shields.io/badge/Demo-Live%20On%20Vercel-brightgreen?style=for-the-badge)](https://your-latest-news-front-end.vercel.app)
 [![Next.js](https://img.shields.io/badge/Frontend-Next.js%2015-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
